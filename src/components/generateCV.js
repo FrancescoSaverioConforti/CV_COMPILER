@@ -87,6 +87,10 @@ export const generateCV = async (formData) => {
     const languages = formData.languages;
     const skillGroups = formData.skillGroups;
     const drivingLicense = formData.drivingLicense;
+    const customSections = formData.customSections || [];
+    const signatureLocation = formData.signatureLocation || "";
+    const today = new Date();
+    const autoDate = `${String(today.getDate()).padStart(2, "0")}/${String(today.getMonth() + 1).padStart(2, "0")}/${today.getFullYear()}`;
 
     const fullName = `${CONTACT_INFO.firstName} ${CONTACT_INFO.lastName}`.trim();
 
@@ -259,7 +263,8 @@ export const generateCV = async (formData) => {
                         .map(c => ({
                             text: `${c.name || c.title}${c.issuer ? " - " + c.issuer : ""}${c.year ? " (" + c.year + ")" : ""}`,
                             fontSize: BODY_FONT,
-                            margin: [0, 1, 0, 1]
+                            margin: [0, 1, 0, 1],
+                            noWrap: false
                         }))
                 }
             ],
@@ -280,7 +285,59 @@ export const generateCV = async (formData) => {
         row("Patente di guida", drivingLicense)
     ] : [];
 
+    const customSectionsSec = customSections.flatMap(sec => {
+        if (!sec.title && (!sec.rows || sec.rows.length === 0)) return [];
+        const rows = (sec.rows || []).filter(r => r.label || r.value);
+        return [
+            ...sectionHeader(sec.title || "SEZIONE PERSONALIZZATA"),
+            ...rows.map(r => row(r.label || "", r.value || ""))
+        ];
+    });
+
     const declarationSec = buildDeclaration(CONTACT_INFO, LABEL_WIDTH, VALUE_LEFT_MARGIN, VALUE_WIDTH, BODY_FONT);
+
+    const signatureSec = [
+        { text: "", margin: [0, 20, 0, 0] },
+        {
+            canvas: [{
+                type: "rect",
+                x: VERTICAL_LINE_X - 1,
+                y: 0,
+                w: 3,
+                h: 200,
+                color: "#ffffff"
+            }],
+            absolutePosition: { x: 0, y: 650 }
+        },
+        {
+            columns: [
+                { width: LABEL_WIDTH, text: "", fontSize: BODY_FONT },
+                { width: VALUE_LEFT_MARGIN, text: "" },
+                {
+                    width: VALUE_WIDTH,
+                    stack: [
+                        {
+                            text: `${signatureLocation ? signatureLocation + ", " : ""}${autoDate}`,
+                            fontSize: BODY_FONT
+                        },
+                        { text: "", margin: [0, 50, 0, 0] },
+                        {
+                            columns: [
+                                { width: "*", text: "" },
+                                {
+                                    width: "auto",
+                                    stack: [
+                                        { canvas: [{ type: "line", x1: 0, y1: 0, x2: 150, y2: 0, lineWidth: 0.5, lineColor: "#000" }] },
+                                        { text: "FIRMA", fontSize: BODY_FONT, bold: true, alignment: "center", margin: [0, 4, 0, 0] }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ];
 
     const docDefinition = {
         pageSize: "A4",
@@ -298,7 +355,9 @@ export const generateCV = async (formData) => {
             ...certificationsSec,
             ...publicationsSec,
             ...otherSec,
-            ...declarationSec
+            ...customSectionsSec,
+            ...declarationSec,
+            ...signatureSec
         ],
         defaultStyle: { fontSize: BODY_FONT, lineHeight: 1.15 }
     };
@@ -321,6 +380,10 @@ export const generateCVBlob = async (formData) => {
         const languages = formData.languages;
         const skillGroups = formData.skillGroups;
         const drivingLicense = formData.drivingLicense;
+        const customSections = formData.customSections || [];
+        const signatureLocation = formData.signatureLocation || "";
+        const today = new Date();
+        const autoDate = `${String(today.getDate()).padStart(2, "0")}/${String(today.getMonth() + 1).padStart(2, "0")}/${today.getFullYear()}`;
 
         const fullName = `${CONTACT_INFO.firstName} ${CONTACT_INFO.lastName}`.trim();
 
@@ -514,7 +577,59 @@ export const generateCVBlob = async (formData) => {
             row("Patente di guida", drivingLicense)
         ] : [];
 
+        const customSectionsSec = customSections.flatMap(sec => {
+            if (!sec.title && (!sec.rows || sec.rows.length === 0)) return [];
+            const rows = (sec.rows || []).filter(r => r.label || r.value);
+            return [
+                ...sectionHeader(sec.title || "SEZIONE PERSONALIZZATA"),
+                ...rows.map(r => row(r.label || "", r.value || ""))
+            ];
+        });
+
         const declarationSec = buildDeclaration(CONTACT_INFO, LABEL_WIDTH, VALUE_LEFT_MARGIN, VALUE_WIDTH, BODY_FONT);
+
+        const signatureSec = [
+            { text: "", margin: [0, 20, 0, 0] },
+            {
+                canvas: [{
+                    type: "rect",
+                    x: VERTICAL_LINE_X - 1,
+                    y: 0,
+                    w: 3,
+                    h: 200,
+                    color: "#ffffff"
+                }],
+                absolutePosition: { x: 0, y: 650 }
+            },
+            {
+                columns: [
+                    { width: LABEL_WIDTH, text: "", fontSize: BODY_FONT },
+                    { width: VALUE_LEFT_MARGIN, text: "" },
+                    {
+                        width: VALUE_WIDTH,
+                        stack: [
+                            {
+                                text: `${signatureLocation ? signatureLocation + ", " : ""}${autoDate}`,
+                                fontSize: BODY_FONT
+                            },
+                            { text: "", margin: [0, 50, 0, 0] },
+                            {
+                                columns: [
+                                    { width: "*", text: "" },
+                                    {
+                                        width: "auto",
+                                        stack: [
+                                            { canvas: [{ type: "line", x1: 0, y1: 0, x2: 150, y2: 0, lineWidth: 0.5, lineColor: "#000" }] },
+                                            { text: "FIRMA", fontSize: BODY_FONT, bold: true, alignment: "center", margin: [0, 4, 0, 0] }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
 
         const docDefinition = {
             pageSize: "A4",
@@ -532,7 +647,9 @@ export const generateCVBlob = async (formData) => {
                 ...certificationsSec,
                 ...publicationsSec,
                 ...otherSec,
-                ...declarationSec
+                ...customSectionsSec,
+                ...declarationSec,
+                ...signatureSec
             ],
             defaultStyle: { fontSize: BODY_FONT, lineHeight: 1.15 }
         };

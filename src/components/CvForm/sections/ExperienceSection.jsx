@@ -35,7 +35,7 @@ function ExperienceCard({ exp, updateItem, handleDelete }) {
           className="flex-1 flex items-center gap-2 text-left"
           onClick={() => setOpen(!open)}
         >
-          <span className="font-semibold text-gray-800 truncate">{summary}</span>
+          <span className="font-semibold text-gray-800 break-words min-w-0 flex-1">{summary}</span>
           {exp.dateFrom && (
             <span className="text-xs text-gray-400 shrink-0">
               {exp.dateFrom}{exp.dateTo ? ` → ${exp.dateTo}` : ""}

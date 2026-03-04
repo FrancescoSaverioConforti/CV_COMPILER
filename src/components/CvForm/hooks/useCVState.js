@@ -25,6 +25,8 @@ export default function useCVState() {
     projects: [],
     publications: [],
     drivingLicense: "",
+    signatureLocation: "",
+    customSections: [],
   });
 
   // -------------------------
@@ -51,8 +53,8 @@ export default function useCVState() {
         languages: {
           ...prev.languages,
           other: [
-            ...prev.languages.other,
             { id: crypto.randomUUID(), ...template },
+            ...prev.languages.other,
           ],
         },
       }));
@@ -60,8 +62,8 @@ export default function useCVState() {
       setFormData((prev) => ({
         ...prev,
         [field]: [
-          ...prev[field],
           { id: crypto.randomUUID(), ...template },
+          ...prev[field],
         ],
       }));
     }

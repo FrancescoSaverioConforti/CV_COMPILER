@@ -70,7 +70,8 @@ export default function parseEuropassOCR(structuredText) {
   const contact = {
     firstName,
     lastName,
-    email:       findValue(/^e-?mail$/i),
+    email:       findValue(/^e-?mail$|^email$/i),
+    pec:         findValue(/^pec$/i),
     phone:       findValue(/^telefono$|^cellulare$/i),
     location:    findValue(/^indirizzo$/i),
     nationality: findValue(/^nazionalit/i),

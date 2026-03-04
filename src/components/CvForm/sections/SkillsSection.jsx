@@ -16,7 +16,7 @@ function SkillCard({ group, updateItem, removeItem }) {
     <div className={cardBase}>
       <div className="flex items-center gap-2 mb-2">
         <button type="button" className="flex-1 flex items-center gap-2 text-left" onClick={() => setOpen(!open)}>
-          <span className="font-semibold text-gray-800 truncate">{summary}</span>
+          <span className="font-semibold text-gray-800 break-words min-w-0 flex-1">{summary}</span>
           {open ? <ChevronUp size={16} className="text-gray-400 shrink-0 ml-auto" /> : <ChevronDown size={16} className="text-gray-400 shrink-0 ml-auto" />}
         </button>
         <button onClick={() => removeItem("skillGroups", group.id)}

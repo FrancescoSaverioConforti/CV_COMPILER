@@ -43,7 +43,7 @@ function ProjectCard({ project, updateItem, removeItem }) {
           <GripVertical size={18} />
         </div>
         <button type="button" className="flex-1 flex items-center gap-2 text-left" onClick={() => setOpen(!open)}>
-          <span className="font-semibold text-gray-800 truncate">{summary}</span>
+          <span className="font-semibold text-gray-800 break-words min-w-0 flex-1">{summary}</span>
           {open ? <ChevronUp size={16} className="text-gray-400 ml-auto shrink-0" /> : <ChevronDown size={16} className="text-gray-400 ml-auto shrink-0" />}
         </button>
         <button onClick={() => removeItem("projects", project.id)}
